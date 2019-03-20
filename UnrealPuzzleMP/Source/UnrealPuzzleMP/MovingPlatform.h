@@ -17,6 +17,8 @@ class UNREALPUZZLEMP_API AMovingPlatform : public AStaticMeshActor
 public:
 	AMovingPlatform();
 
+	virtual void BeginPlay() override;
+
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
