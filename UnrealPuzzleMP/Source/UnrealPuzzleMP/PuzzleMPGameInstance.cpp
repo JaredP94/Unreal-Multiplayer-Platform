@@ -2,6 +2,7 @@
 
 #include "PuzzleMPGameInstance.h"
 #include "Engine/Engine.h"
+#include "GameFramework/PlayerController.h"
 
 UPuzzleMPGameInstance::UPuzzleMPGameInstance(const FObjectInitializer &ObjectInitializer)
 {
@@ -34,4 +35,11 @@ void UPuzzleMPGameInstance::Join(const FString & Address)
 		return;
 
 	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, FString::Printf(TEXT("Joining: %s"), *Address));
+
+	auto PlayerController = GetFirstLocalPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
