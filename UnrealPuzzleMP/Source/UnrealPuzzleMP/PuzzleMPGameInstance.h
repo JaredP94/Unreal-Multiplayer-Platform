@@ -18,4 +18,10 @@ public:
 	UPuzzleMPGameInstance(const FObjectInitializer & ObjectInitializer);
 
 	virtual void Init();
+
+	UFUNCTION(exec)
+	void Host();
+
+	UFUNCTION(exec)
+	void Join(const FString & Address);
 };
