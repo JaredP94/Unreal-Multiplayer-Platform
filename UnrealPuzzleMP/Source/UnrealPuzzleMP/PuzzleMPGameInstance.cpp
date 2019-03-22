@@ -19,6 +19,13 @@ void UPuzzleMPGameInstance::Host()
 		return;
 
 	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, TEXT("Hosting"));
+
+	auto World = GetWorld();
+
+	if (!World)
+		return;
+
+	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
 }
 
 void UPuzzleMPGameInstance::Join(const FString & Address)
