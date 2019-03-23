@@ -25,6 +25,19 @@ void UPuzzleMPGameInstance::Init()
 	UE_LOG(LogTemp, Warning, TEXT("Found class: %s"), *MenuClass->GetName());
 }
 
+void UPuzzleMPGameInstance::LoadMenu()
+{
+	if (!MenuClass)
+		return;
+
+	auto Menu = CreateWidget<UUserWidget>(this, MenuClass);
+
+	if (!Menu)
+		return;
+
+	Menu->AddToViewport();
+}
+
 void UPuzzleMPGameInstance::Host()
 {
 	if (!GEngine)

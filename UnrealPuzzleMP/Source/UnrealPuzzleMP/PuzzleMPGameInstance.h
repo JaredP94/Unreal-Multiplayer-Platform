@@ -19,6 +19,9 @@ public:
 
 	virtual void Init();
 
+	UFUNCTION(BlueprintCallable)
+	void LoadMenu();
+
 	UFUNCTION(exec)
 	void Host();
 
