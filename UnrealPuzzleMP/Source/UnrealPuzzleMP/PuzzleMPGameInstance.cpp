@@ -1,17 +1,28 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PuzzleMPGameInstance.h"
+
+#include "PlatformTrigger.h"
+
 #include "Engine/Engine.h"
 #include "GameFramework/PlayerController.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
+
 
 UPuzzleMPGameInstance::UPuzzleMPGameInstance(const FObjectInitializer &ObjectInitializer)
 {
-	UE_LOG(LogTemp, Warning, TEXT("GameInstance Constructor"));
+	ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
+
+	if (!MenuBPClass.Class)
+		return;
+
+	MenuClass = MenuBPClass.Class;
 }
 
 void UPuzzleMPGameInstance::Init()
 {
-	UE_LOG(LogTemp, Warning, TEXT("GameInstance Init"));
+	UE_LOG(LogTemp, Warning, TEXT("Found class: %s"), *MenuClass->GetName());
 }
 
 void UPuzzleMPGameInstance::Host()
