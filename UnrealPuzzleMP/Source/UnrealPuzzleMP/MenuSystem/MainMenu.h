@@ -14,6 +14,13 @@ class UNREALPUZZLEMP_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+	virtual bool Initialize() override;
+
+private:
+	UFUNCTION()
+	void HostServer();
+
 	UPROPERTY(meta = (BindWidget))
 	class UButton* host;
 
