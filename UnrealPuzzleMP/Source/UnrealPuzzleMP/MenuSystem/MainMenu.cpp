@@ -24,6 +24,28 @@ void UMainMenu::SetMainMenuInterface(IMainMenuInterface* MainMenuInterface)
 	this->MainMenuInterface = MainMenuInterface;
 }
 
+void UMainMenu::Setup()
+{
+	this->AddToViewport();
+
+	auto World = GetWorld();
+
+	if (!World)
+		return;
+
+	auto PlayerController = World->GetFirstPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	FInputModeUIOnly InputModeData;
+	InputModeData.SetWidgetToFocus(this->TakeWidget());
+	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
+	PlayerController->SetInputMode(InputModeData);
+	PlayerController->bShowMouseCursor = true;
+}
+
 void UMainMenu::HostServer()
 {
 	if (!MainMenuInterface)

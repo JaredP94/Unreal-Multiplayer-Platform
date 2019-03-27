@@ -18,6 +18,8 @@ class UNREALPUZZLEMP_API UMainMenu : public UUserWidget
 public:
 	void SetMainMenuInterface(IMainMenuInterface* MainMenuInterface);
 
+	void Setup();
+
 protected:
 	virtual bool Initialize() override;
 
