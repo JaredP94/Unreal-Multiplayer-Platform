@@ -3,6 +3,7 @@
 #include "PuzzleMPGameInstance.h"
 
 #include "PlatformTrigger.h"
+#include "MenuSystem/MainMenu.h"
 
 #include "Engine/Engine.h"
 #include "GameFramework/PlayerController.h"
@@ -30,7 +31,7 @@ void UPuzzleMPGameInstance::LoadMenu()
 	if (!MenuClass)
 		return;
 
-	auto Menu = CreateWidget<UUserWidget>(this, MenuClass);
+	auto Menu = CreateWidget<UMainMenu>(this, MenuClass);
 
 	if (!Menu)
 		return;
@@ -48,6 +49,8 @@ void UPuzzleMPGameInstance::LoadMenu()
 
 	PlayerController->SetInputMode(InputModeData);
 	PlayerController->bShowMouseCursor = true;
+
+	Menu->SetMainMenuInterface(this);
 }
 
 void UPuzzleMPGameInstance::Host()

@@ -19,6 +19,11 @@ bool UMainMenu::Initialize()
 	return true;
 }
 
+void UMainMenu::SetMainMenuInterface(IMainMenuInterface* MainMenuInterface)
+{
+	this->MainMenuInterface = MainMenuInterface;
+}
+
 void UMainMenu::HostServer()
 {
 	if (!MainMenuInterface)

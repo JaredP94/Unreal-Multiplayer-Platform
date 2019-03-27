@@ -15,6 +15,9 @@ class UNREALPUZZLEMP_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	void SetMainMenuInterface(IMainMenuInterface* MainMenuInterface);
+
 protected:
 	virtual bool Initialize() override;
 
