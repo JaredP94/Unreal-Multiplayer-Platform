@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MainMenu.h"
-
+#include "MainMenuInterface.h"
 #include "Components/Button.h"
 
 bool UMainMenu::Initialize()
@@ -21,5 +21,8 @@ bool UMainMenu::Initialize()
 
 void UMainMenu::HostServer()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Host server"));
+	if (!MainMenuInterface)
+		return;
+
+	MainMenuInterface->Host();
 }

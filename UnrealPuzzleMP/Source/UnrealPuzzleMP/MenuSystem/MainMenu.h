@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "MainMenuInterface.h"
 #include "MainMenu.generated.h"
 
 /**
@@ -26,4 +27,6 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* join;
+
+	IMainMenuInterface* MainMenuInterface;
 };
