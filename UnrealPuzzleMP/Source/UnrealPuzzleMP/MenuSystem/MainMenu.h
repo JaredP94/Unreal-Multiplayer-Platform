@@ -29,11 +29,29 @@ private:
 	UFUNCTION()
 	void HostServer();
 
-	UPROPERTY(meta = (BindWidget))
-	class UButton* host;
+	UFUNCTION()
+	void OpenJoinMenu();
+
+	UFUNCTION()
+	void OpenMainMenu();
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* join;
+	class UButton* HostButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* JoinButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* CancelJoinButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWidgetSwitcher* MenuSwitcher;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWidget* JoinMenu;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWidget* MainMenu;
 
 	IMainMenuInterface* MainMenuInterface;
 };
