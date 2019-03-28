@@ -3,24 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "MainMenuInterface.h"
+#include "MenuWidget.h"
 #include "MainMenu.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPUZZLEMP_API UMainMenu : public UUserWidget
+class UNREALPUZZLEMP_API UMainMenu : public UMenuWidget
 {
 	GENERATED_BODY()
-
-public:
-	void SetMainMenuInterface(IMainMenuInterface* MainMenuInterface);
-
-	void Setup();
-
-	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
 
 protected:
 	virtual bool Initialize() override;
@@ -61,6 +53,4 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UEditableTextBox* IpAddress;
-
-	IMainMenuInterface* MainMenuInterface;
 };
