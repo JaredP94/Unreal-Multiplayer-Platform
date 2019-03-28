@@ -29,6 +29,16 @@ void UPuzzleMPGameInstance::Init()
 	UE_LOG(LogTemp, Warning, TEXT("Found class: %s"), *MenuClass->GetName());
 }
 
+void UPuzzleMPGameInstance::LoadMainMenu()
+{
+	auto PlayerController = GetFirstLocalPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	PlayerController->ClientTravel("/Game/MenuSystem/MainMenu", ETravelType::TRAVEL_Absolute);
+}
+
 void UPuzzleMPGameInstance::LoadMenu()
 {
 	if (!MenuClass)

@@ -18,7 +18,8 @@ class UNREALPUZZLEMP_API UPuzzleMPGameInstance : public UGameInstance, public IM
 public:
 	UPuzzleMPGameInstance(const FObjectInitializer & ObjectInitializer);
 
-	virtual void Init();
+	virtual void Init() override;
+	virtual void LoadMainMenu() override;
 
 	UFUNCTION(BlueprintCallable)
 	void LoadMenu();
@@ -27,10 +28,10 @@ public:
 	void LoadInGameMenu();
 
 	UFUNCTION(exec)
-	void Host();
+	void Host() override;
 
 	UFUNCTION(exec)
-	void Join(const FString & Address);
+	void Join(const FString & Address) override;
 
 private:
 	TSubclassOf<class UUserWidget> MenuClass;
