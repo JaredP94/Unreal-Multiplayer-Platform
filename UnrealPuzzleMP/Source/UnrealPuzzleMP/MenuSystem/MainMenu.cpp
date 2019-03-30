@@ -10,11 +10,12 @@ bool UMainMenu::Initialize()
 {
 	bool Success = Super::Initialize();
 
-	if (!Success || !HostButton || !JoinButton || !CancelJoinButton || !JoinIpButton)
+	if (!Success || !HostButton || !JoinButton || !CancelJoinButton || !JoinIpButton || !ExitButton)
 		return false;
 
 	HostButton->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenJoinMenu);
+	ExitButton->OnClicked.AddDynamic(this, &UMainMenu::ExitPressed);
 	CancelJoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
 	JoinIpButton->OnClicked.AddDynamic(this, &UMainMenu::JoinServer);
 
@@ -35,6 +36,21 @@ void UMainMenu::JoinServer()
 		return;
 
 	MainMenuInterface->Join(IpAddress->GetText().ToString());
+}
+
+void UMainMenu::ExitPressed()
+{
+	auto World = GetWorld();
+
+	if (!World)
+		return;
+
+	auto PlayerController = World->GetFirstPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	PlayerController->ConsoleCommand("quit");
 }
 
 void UMainMenu::OpenJoinMenu()
