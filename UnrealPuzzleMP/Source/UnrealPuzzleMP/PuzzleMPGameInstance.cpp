@@ -48,6 +48,8 @@ void UPuzzleMPGameInstance::Init()
 		
 		if (SessionSearch.IsValid())
 		{
+			SessionSearch->bIsLanQuery = true;
+
 			UE_LOG(LogTemp, Warning, TEXT("Begin session find"));
 			SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 		}
@@ -158,14 +160,26 @@ void UPuzzleMPGameInstance::OnDestroySessionComplete(FName SessionName, bool Suc
 
 void UPuzzleMPGameInstance::OnFindSessionsComplete(bool Success)
 {
-	UE_LOG(LogTemp, Warning, TEXT("End session find"));
+	if (SessionSearch.IsValid() && Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("End session find"));
+
+		for (auto &Result : SessionSearch->SearchResults)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Found Session: %s, Ping: %i"), *Result.GetSessionIdStr(), Result.PingInMs);
+		}
+	}
 }
 
 void UPuzzleMPGameInstance::CreateSession()
 {
 	if (SessionInterface.IsValid())
 	{
-		FOnlineSessionSettings Settings;
-		SessionInterface->CreateSession(0, SESSION_NAME, Settings);
+		FOnlineSessionSettings SessionSettings;
+		SessionSettings.bIsLANMatch = true;
+		SessionSettings.NumPublicConnections = 2;
+		SessionSettings.bShouldAdvertise = true;
+
+		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 	}
 }
