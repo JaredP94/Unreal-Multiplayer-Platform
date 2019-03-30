@@ -33,6 +33,10 @@ void UPuzzleMPGameInstance::Init()
 		return;
 
 	UE_LOG(LogTemp, Warning, TEXT("Found subsystem: %s"), *OSS->GetSubsystemName().ToString());
+	auto SessionInterface = OSS->GetSessionInterface();
+
+	if (SessionInterface.IsValid())
+		UE_LOG(LogTemp, Warning, TEXT("Found session interface"));
 }
 
 void UPuzzleMPGameInstance::LoadMainMenu()
