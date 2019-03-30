@@ -14,6 +14,7 @@
 #include "OnlineSessionInterface.h"
 #include "OnlineSessionSettings.h"
 
+const static FName SESSION_NAME = TEXT("GameSession");
 
 UPuzzleMPGameInstance::UPuzzleMPGameInstance(const FObjectInitializer &ObjectInitializer)
 {
@@ -83,9 +84,19 @@ void UPuzzleMPGameInstance::Host()
 	if (SessionInterface.IsValid())
 	{
 		SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnCreateSessionComplete);
+		SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnDestroySessionComplete);
 
-		FOnlineSessionSettings Settings;
-		SessionInterface->CreateSession(0, TEXT("GameSession"), Settings);
+		auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME);
+
+		if (ExistingSession)
+		{
+			SessionInterface->DestroySession(SESSION_NAME);
+		}
+		else
+		{
+			CreateSession();
+		}
+		
 	}
 }
 
@@ -123,4 +134,21 @@ void UPuzzleMPGameInstance::OnCreateSessionComplete(FName SessionName, bool Succ
 		return;
 
 	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+}
+
+void UPuzzleMPGameInstance::OnDestroySessionComplete(FName SessionName, bool Success)
+{
+	if (Success)
+	{
+		CreateSession();
+	}
+}
+
+void UPuzzleMPGameInstance::CreateSession()
+{
+	if (SessionInterface.IsValid())
+	{
+		FOnlineSessionSettings Settings;
+		SessionInterface->CreateSession(0, SESSION_NAME, Settings);
+	}
 }
