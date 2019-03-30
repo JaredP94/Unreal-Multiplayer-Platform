@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "MenuSystem/MainMenuInterface.h"
+#include "OnlineSubsystem.h"
 #include "PuzzleMPGameInstance.generated.h"
 
 /**
@@ -34,6 +35,10 @@ public:
 	void Join(const FString & Address) override;
 
 private:
+	void OnCreateSessionComplete(FName SessionName, bool Success);
+
+	IOnlineSessionPtr SessionInterface;
+
 	TSubclassOf<class UUserWidget> MenuClass;
 	TSubclassOf<class UUserWidget> InGameMenuClass;
 };

@@ -11,6 +11,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSessionInterface.h"
+#include "OnlineSessionSettings.h"
 
 
 UPuzzleMPGameInstance::UPuzzleMPGameInstance(const FObjectInitializer &ObjectInitializer)
@@ -33,10 +35,7 @@ void UPuzzleMPGameInstance::Init()
 		return;
 
 	UE_LOG(LogTemp, Warning, TEXT("Found subsystem: %s"), *OSS->GetSubsystemName().ToString());
-	auto SessionInterface = OSS->GetSessionInterface();
-
-	if (SessionInterface.IsValid())
-		UE_LOG(LogTemp, Warning, TEXT("Found session interface"));
+	SessionInterface = OSS->GetSessionInterface();
 }
 
 void UPuzzleMPGameInstance::LoadMainMenu()
@@ -81,17 +80,13 @@ void UPuzzleMPGameInstance::LoadInGameMenu()
 
 void UPuzzleMPGameInstance::Host()
 {
-	if (!GEngine)
-		return;
+	if (SessionInterface.IsValid())
+	{
+		SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnCreateSessionComplete);
 
-	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, TEXT("Hosting"));
-
-	auto World = GetWorld();
-
-	if (!World)
-		return;
-
-	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+		FOnlineSessionSettings Settings;
+		SessionInterface->CreateSession(0, TEXT("GameSession"), Settings);
+	}
 }
 
 void UPuzzleMPGameInstance::Join(const FString & Address)
@@ -107,4 +102,25 @@ void UPuzzleMPGameInstance::Join(const FString & Address)
 		return;
 
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+}
+
+void UPuzzleMPGameInstance::OnCreateSessionComplete(FName SessionName, bool Success)
+{
+	if (!Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could not create session"));
+		return;
+	}
+
+	if (!GEngine)
+		return;
+
+	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, TEXT("Hosting"));
+
+	auto World = GetWorld();
+
+	if (!World)
+		return;
+
+	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
 }
