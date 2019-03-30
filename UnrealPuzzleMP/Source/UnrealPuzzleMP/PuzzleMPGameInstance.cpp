@@ -37,6 +37,21 @@ void UPuzzleMPGameInstance::Init()
 
 	UE_LOG(LogTemp, Warning, TEXT("Found subsystem: %s"), *OSS->GetSubsystemName().ToString());
 	SessionInterface = OSS->GetSessionInterface();
+
+	if (SessionInterface.IsValid())
+	{
+		SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnCreateSessionComplete);
+		SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnDestroySessionComplete);
+		SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnFindSessionsComplete);
+
+		SessionSearch = MakeShareable(new FOnlineSessionSearch());
+		
+		if (SessionSearch.IsValid())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Begin session find"));
+			SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+		}
+	}
 }
 
 void UPuzzleMPGameInstance::LoadMainMenu()
@@ -83,9 +98,6 @@ void UPuzzleMPGameInstance::Host()
 {
 	if (SessionInterface.IsValid())
 	{
-		SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnCreateSessionComplete);
-		SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnDestroySessionComplete);
-
 		auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME);
 
 		if (ExistingSession)
@@ -142,6 +154,11 @@ void UPuzzleMPGameInstance::OnDestroySessionComplete(FName SessionName, bool Suc
 	{
 		CreateSession();
 	}
+}
+
+void UPuzzleMPGameInstance::OnFindSessionsComplete(bool Success)
+{
+	UE_LOG(LogTemp, Warning, TEXT("End session find"));
 }
 
 void UPuzzleMPGameInstance::CreateSession()
