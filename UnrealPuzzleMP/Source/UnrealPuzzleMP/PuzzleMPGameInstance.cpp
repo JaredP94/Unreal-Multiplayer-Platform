@@ -10,6 +10,7 @@
 #include "GameFramework/PlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "OnlineSubsystem.h"
 
 
 UPuzzleMPGameInstance::UPuzzleMPGameInstance(const FObjectInitializer &ObjectInitializer)
@@ -26,7 +27,12 @@ UPuzzleMPGameInstance::UPuzzleMPGameInstance(const FObjectInitializer &ObjectIni
 
 void UPuzzleMPGameInstance::Init()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Found class: %s"), *MenuClass->GetName());
+	auto OSS = IOnlineSubsystem::Get();
+
+	if (!OSS)
+		return;
+
+	UE_LOG(LogTemp, Warning, TEXT("Found subsystem: %s"), *OSS->GetSubsystemName().ToString());
 }
 
 void UPuzzleMPGameInstance::LoadMainMenu()
