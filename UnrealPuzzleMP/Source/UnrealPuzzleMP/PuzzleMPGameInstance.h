@@ -21,6 +21,7 @@ public:
 
 	virtual void Init() override;
 	virtual void LoadMainMenu() override;
+	virtual void RefreshServerList() override;
 
 	UFUNCTION(BlueprintCallable)
 	void LoadMenu();
@@ -42,6 +43,8 @@ private:
 
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+
+	class UMainMenu* Menu;
 
 	TSubclassOf<class UUserWidget> MenuClass;
 	TSubclassOf<class UUserWidget> InGameMenuClass;

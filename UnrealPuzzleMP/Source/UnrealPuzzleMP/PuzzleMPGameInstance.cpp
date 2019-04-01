@@ -43,16 +43,6 @@ void UPuzzleMPGameInstance::Init()
 		SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnCreateSessionComplete);
 		SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnDestroySessionComplete);
 		SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnFindSessionsComplete);
-
-		SessionSearch = MakeShareable(new FOnlineSessionSearch());
-		
-		if (SessionSearch.IsValid())
-		{
-			SessionSearch->bIsLanQuery = true;
-
-			UE_LOG(LogTemp, Warning, TEXT("Begin session find"));
-			SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
-		}
 	}
 }
 
@@ -66,12 +56,25 @@ void UPuzzleMPGameInstance::LoadMainMenu()
 	PlayerController->ClientTravel("/Game/MenuSystem/MainMenu", ETravelType::TRAVEL_Absolute);
 }
 
+void UPuzzleMPGameInstance::RefreshServerList()
+{
+	SessionSearch = MakeShareable(new FOnlineSessionSearch());
+
+	if (SessionSearch.IsValid())
+	{
+		SessionSearch->bIsLanQuery = true;
+
+		UE_LOG(LogTemp, Warning, TEXT("Begin session find"));
+		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+	}
+}
+
 void UPuzzleMPGameInstance::LoadMenu()
 {
 	if (!MenuClass)
 		return;
 
-	auto Menu = CreateWidget<UMainMenu>(this, MenuClass);
+	Menu = CreateWidget<UMainMenu>(this, MenuClass);
 
 	if (!Menu)
 		return;
@@ -116,7 +119,7 @@ void UPuzzleMPGameInstance::Host()
 
 void UPuzzleMPGameInstance::Join(const FString & Address)
 {
-	if (!GEngine)
+	/*if (!GEngine)
 		return;
 
 	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, FString::Printf(TEXT("Joining: %s"), *Address));
@@ -126,7 +129,7 @@ void UPuzzleMPGameInstance::Join(const FString & Address)
 	if (!PlayerController)
 		return;
 
-	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);*/
 }
 
 void UPuzzleMPGameInstance::OnCreateSessionComplete(FName SessionName, bool Success)
@@ -160,14 +163,19 @@ void UPuzzleMPGameInstance::OnDestroySessionComplete(FName SessionName, bool Suc
 
 void UPuzzleMPGameInstance::OnFindSessionsComplete(bool Success)
 {
-	if (SessionSearch.IsValid() && Success)
+	if (SessionSearch.IsValid() && Success && Menu)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("End session find"));
+
+		TArray<FString> ServerNames;
 
 		for (auto &Result : SessionSearch->SearchResults)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Found Session: %s, Ping: %i"), *Result.GetSessionIdStr(), Result.PingInMs);
+			ServerNames.Add(Result.GetSessionIdStr() + "\t\t\t" + FString::FromInt(Result.PingInMs));
 		}
+
+		Menu->SetServerList(ServerNames);
 	}
 }
 

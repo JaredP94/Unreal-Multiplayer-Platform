@@ -7,6 +7,7 @@
 #include "Components/EditableTextBox.h"
 #include "UObject/ConstructorHelpers.h"
 #include "ServerRow.h"
+#include "Components/TextBlock.h"
 
 UMainMenu::UMainMenu(const FObjectInitializer &ObjectInitializer)
 {
@@ -34,6 +35,28 @@ bool UMainMenu::Initialize()
 	return true;
 }
 
+void UMainMenu::SetServerList(TArray<FString> ServerNames)
+{
+	auto World = this->GetWorld();
+
+	if (!World)
+		return;
+
+	ServerList->ClearChildren();
+
+	for (auto &ServerName : ServerNames)
+	{
+		auto ServerRow = CreateWidget<UServerRow>(World, ServerRowClass);
+
+		if (!ServerRow)
+			return;
+
+		ServerRow->ServerName->SetText(FText::FromString(ServerName));
+
+		ServerList->AddChild(ServerRow);
+	}
+}
+
 void UMainMenu::HostServer()
 {
 	if (!MainMenuInterface)
@@ -48,18 +71,10 @@ void UMainMenu::JoinServer()
 		return;
 
 	MainMenuInterface->Join(IpAddress->GetText().ToString());*/
-
-	auto World = this->GetWorld();
-
-	if (!World)
+	if (!MainMenuInterface)
 		return;
 
-	auto ServerRow = CreateWidget<UServerRow>(World, ServerRowClass);
-
-	if (!ServerRow)
-		return;
-
-	ServerList->AddChild(ServerRow);
+	MainMenuInterface->Join("");
 }
 
 void UMainMenu::ExitPressed()
@@ -83,6 +98,9 @@ void UMainMenu::OpenJoinMenu()
 		return;
 
 	MenuSwitcher->SetActiveWidget(JoinMenu);
+
+	if (MainMenuInterface)
+		MainMenuInterface->RefreshServerList();
 }
 
 void UMainMenu::OpenMainMenu()
