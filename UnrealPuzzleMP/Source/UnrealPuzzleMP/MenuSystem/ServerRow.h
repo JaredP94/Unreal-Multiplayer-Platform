@@ -17,4 +17,18 @@ class UNREALPUZZLEMP_API UServerRow : public UUserWidget
 public:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ServerName;
+
+	void Setup(class UMainMenu* InMainMenu, uint32 InIndex);
+
+private:
+	UPROPERTY(meta = (BindWidget))
+	class UButton* RowButton;
+
+	UFUNCTION()
+	void OnClicked();
+
+	UPROPERTY()
+	class UMainMenu* MainMenuParent;
+
+	uint32 Index;
 };
