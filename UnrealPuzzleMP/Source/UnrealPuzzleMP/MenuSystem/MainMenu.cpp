@@ -75,22 +75,15 @@ void UMainMenu::HostServer()
 
 void UMainMenu::JoinServer()
 {
-	if (SelectedIndex.IsSet())
+	if (SelectedIndex.IsSet() && MainMenuInterface)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Selected index %d."), SelectedIndex.GetValue());
+		MainMenuInterface->Join(SelectedIndex.GetValue());
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Selected index not set."));
 	}
-	/*if (!MainMenuInterface || !IpAddress)
-		return;
-
-	MainMenuInterface->Join(IpAddress->GetText().ToString());*/
-	if (!MainMenuInterface)
-		return;
-
-	MainMenuInterface->Join("");
 }
 
 void UMainMenu::ExitPressed()

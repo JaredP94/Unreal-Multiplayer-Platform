@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "MenuSystem/MainMenuInterface.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSessionInterface.h"
 #include "PuzzleMPGameInstance.generated.h"
 
 /**
@@ -33,13 +34,14 @@ public:
 	void Host() override;
 
 	UFUNCTION(exec)
-	void Join(const FString & Address) override;
+	void Join(uint32 Index) override;
 
 private:
 	void OnCreateSessionComplete(FName SessionName, bool Success);
 	void OnDestroySessionComplete(FName SessionName, bool Success);
 	void OnFindSessionsComplete(bool Success);
 	void CreateSession();
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;

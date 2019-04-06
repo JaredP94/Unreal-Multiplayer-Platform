@@ -11,7 +11,6 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "OnlineSubsystem.h"
-#include "OnlineSessionInterface.h"
 #include "OnlineSessionSettings.h"
 
 const static FName SESSION_NAME = TEXT("GameSession");
@@ -43,6 +42,7 @@ void UPuzzleMPGameInstance::Init()
 		SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnCreateSessionComplete);
 		SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnDestroySessionComplete);
 		SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnFindSessionsComplete);
+		SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPuzzleMPGameInstance::OnJoinSessionComplete);
 	}
 }
 
@@ -117,19 +117,12 @@ void UPuzzleMPGameInstance::Host()
 	}
 }
 
-void UPuzzleMPGameInstance::Join(const FString & Address)
+void UPuzzleMPGameInstance::Join(uint32 Index)
 {
-	/*if (!GEngine)
+	if (!SessionInterface.IsValid() || !SessionSearch.IsValid())
 		return;
 
-	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, FString::Printf(TEXT("Joining: %s"), *Address));
-
-	auto PlayerController = GetFirstLocalPlayerController();
-
-	if (!PlayerController)
-		return;
-
-	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);*/
+	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
 }
 
 void UPuzzleMPGameInstance::OnCreateSessionComplete(FName SessionName, bool Success)
@@ -190,4 +183,30 @@ void UPuzzleMPGameInstance::CreateSession()
 
 		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 	}
+}
+
+void UPuzzleMPGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	if (!SessionInterface.IsValid())
+		return;
+
+	FString Address;
+
+	if (!SessionInterface->GetResolvedConnectString(SessionName, Address))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could get connect string"));
+		return;
+	}
+
+	if (!GEngine)
+		return;
+
+	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, FString::Printf(TEXT("Joining: %s"), *Address));
+
+	auto PlayerController = GetFirstLocalPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
