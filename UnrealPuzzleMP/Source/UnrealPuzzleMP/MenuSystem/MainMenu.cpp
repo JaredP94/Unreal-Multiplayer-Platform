@@ -63,6 +63,7 @@ void UMainMenu::SetServerList(TArray<FString> ServerNames)
 void UMainMenu::SelectIndex(uint32 Index)
 {
 	SelectedIndex = Index;
+	UpdateChildren();
 }
 
 void UMainMenu::HostServer()
@@ -118,4 +119,15 @@ void UMainMenu::OpenMainMenu()
 		return;
 
 	MenuSwitcher->SetActiveWidget(MainMenu);
+}
+
+void UMainMenu::UpdateChildren()
+{
+	for (auto i = 0; i < ServerList->GetChildrenCount(); ++i)
+	{
+		auto Row = Cast<UServerRow>(ServerList->GetChildAt(i));
+
+		if (Row)
+			Row->Selected = (SelectedIndex.IsSet() && SelectedIndex.GetValue() == i);
+	}
 }

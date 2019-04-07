@@ -164,6 +164,10 @@ void UPuzzleMPGameInstance::OnFindSessionsComplete(bool Success)
 
 		TArray<FString> ServerNames;
 
+		ServerNames.Add("Test server 1");
+		ServerNames.Add("Test server 2");
+		ServerNames.Add("Test server 3");
+
 		for (auto &Result : SessionSearch->SearchResults)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Found Session: %s, Ping: %i"), *Result.GetSessionIdStr(), Result.PingInMs);
