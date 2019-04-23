@@ -31,7 +31,7 @@ public:
 	void LoadInGameMenu();
 
 	UFUNCTION(exec)
-	void Host() override;
+	void Host(FString ServerName) override;
 
 	UFUNCTION(exec)
 	void Join(uint32 Index) override;
@@ -50,4 +50,6 @@ private:
 
 	TSubclassOf<class UUserWidget> MenuClass;
 	TSubclassOf<class UUserWidget> InGameMenuClass;
+
+	FString DesiredServerName;
 };

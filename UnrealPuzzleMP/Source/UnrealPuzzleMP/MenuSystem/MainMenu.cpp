@@ -26,11 +26,13 @@ bool UMainMenu::Initialize()
 	if (!Success || !HostButton || !JoinButton || !CancelJoinButton || !JoinIpButton || !ExitButton)
 		return false;
 
-	HostButton->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
+	HostButton->OnClicked.AddDynamic(this, &UMainMenu::OpenHostMenu);
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenJoinMenu);
 	ExitButton->OnClicked.AddDynamic(this, &UMainMenu::ExitPressed);
 	CancelJoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
+	CancelHostButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
 	JoinIpButton->OnClicked.AddDynamic(this, &UMainMenu::JoinServer);
+	ConfirmHostButton->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
 
 	return true;
 }
@@ -74,7 +76,7 @@ void UMainMenu::HostServer()
 	if (!MainMenuInterface)
 		return;
 
-	MainMenuInterface->Host();
+	MainMenuInterface->Host(HostedServerName->Text.ToString());
 }
 
 void UMainMenu::JoinServer()
@@ -114,6 +116,14 @@ void UMainMenu::OpenJoinMenu()
 
 	if (MainMenuInterface)
 		MainMenuInterface->RefreshServerList();
+}
+
+void UMainMenu::OpenHostMenu()
+{
+	if (!MenuSwitcher || !HostMenu)
+		return;
+
+	MenuSwitcher->SetActiveWidget(HostMenu);
 }
 
 void UMainMenu::OpenMainMenu()

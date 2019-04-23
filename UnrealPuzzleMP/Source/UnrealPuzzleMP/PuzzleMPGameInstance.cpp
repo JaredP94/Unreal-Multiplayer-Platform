@@ -14,6 +14,7 @@
 #include "OnlineSessionSettings.h"
 
 const static FName SESSION_NAME = TEXT("GameSession");
+const static FName SERVER_NAME_KEY = TEXT("ServerName");
 const static int32 MAX_SESSIONS = 100;
 
 UPuzzleMPGameInstance::UPuzzleMPGameInstance(const FObjectInitializer &ObjectInitializer)
@@ -101,8 +102,10 @@ void UPuzzleMPGameInstance::LoadInGameMenu()
 	InGameMenu->SetMainMenuInterface(this);
 }
 
-void UPuzzleMPGameInstance::Host()
+void UPuzzleMPGameInstance::Host(FString ServerName)
 {
+	DesiredServerName = ServerName;
+
 	if (SessionInterface.IsValid())
 	{
 		auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME);
@@ -169,11 +172,16 @@ void UPuzzleMPGameInstance::OnFindSessionsComplete(bool Success)
 			UE_LOG(LogTemp, Warning, TEXT("Found Session: %s, Ping: %i"), *Result.GetSessionIdStr(), Result.PingInMs);
 
 			FServerData ServerData;
-			ServerData.Name = Result.GetSessionIdStr();
 			ServerData.Ping = Result.PingInMs;
 			ServerData.MaxPlayers = Result.Session.SessionSettings.NumPublicConnections;
 			ServerData.CurrentPlayers = ServerData.MaxPlayers - Result.Session.NumOpenPublicConnections;
 			ServerData.Host = Result.Session.OwningUserName;
+
+			FString ServerName;
+			if (Result.Session.SessionSettings.Get(SERVER_NAME_KEY, ServerName))
+				ServerData.Name = ServerName;
+			else
+				ServerData.Name = "Unknown";
 
 			ServerNames.Add(ServerData);
 		}
@@ -196,6 +204,7 @@ void UPuzzleMPGameInstance::CreateSession()
 		SessionSettings.NumPublicConnections = 2;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
+		SessionSettings.Set(SERVER_NAME_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 	}
