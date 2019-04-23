@@ -171,8 +171,8 @@ void UPuzzleMPGameInstance::OnFindSessionsComplete(bool Success)
 			FServerData ServerData;
 			ServerData.Name = Result.GetSessionIdStr();
 			ServerData.Ping = Result.PingInMs;
-			ServerData.CurrentPlayers = Result.Session.NumOpenPublicConnections;
 			ServerData.MaxPlayers = Result.Session.SessionSettings.NumPublicConnections;
+			ServerData.CurrentPlayers = ServerData.MaxPlayers - Result.Session.NumOpenPublicConnections;
 			ServerData.Host = Result.Session.OwningUserName;
 
 			ServerNames.Add(ServerData);
