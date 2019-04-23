@@ -54,8 +54,7 @@ void UMainMenu::SetServerList(TArray<FServerData> Servers)
 
 		ServerRow->ServerName->SetText(FText::FromString(Server.Name));
 		ServerRow->Host->SetText(FText::FromString(Server.Host));
-		ServerRow->CurrentPlayers->SetText(FText::FromString(FString::Printf(TEXT("%d"), Server.CurrentPlayers)));
-		ServerRow->MaxPlayers->SetText(FText::FromString(FString::Printf(TEXT("%d"), Server.MaxPlayers)));
+		ServerRow->Players->SetText(FText::FromString(FString::Printf(TEXT("%d/%d"), Server.CurrentPlayers, Server.MaxPlayers)));
 		ServerRow->Ping->SetText(FText::FromString(FString::Printf(TEXT("%d"), Server.Ping)));
 		ServerRow->Setup(this, Index);
 		++Index;

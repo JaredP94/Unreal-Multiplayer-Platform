@@ -22,10 +22,7 @@ public:
 	class UTextBlock* Host;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* CurrentPlayers;
-
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* MaxPlayers;
+	class UTextBlock* Players;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Ping;
