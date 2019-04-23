@@ -18,6 +18,18 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ServerName;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Host;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CurrentPlayers;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* MaxPlayers;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Ping;
+
 	UPROPERTY(BlueprintReadOnly)
 	bool Selected = false;
 

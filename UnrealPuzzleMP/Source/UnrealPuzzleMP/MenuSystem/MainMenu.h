@@ -6,6 +6,18 @@
 #include "MenuWidget.h"
 #include "MainMenu.generated.h"
 
+USTRUCT()
+struct FServerData
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FString Name;
+	UINT16 CurrentPlayers;
+	UINT16 MaxPlayers;
+	UINT16 Ping;
+	FString Host;
+};
+
 /**
  * 
  */
@@ -16,7 +28,7 @@ class UNREALPUZZLEMP_API UMainMenu : public UMenuWidget
 
 public:
 	UMainMenu(const FObjectInitializer &ObjectInitializer);
-	void SetServerList(TArray<FString> ServerNames);
+	void SetServerList(TArray<FServerData> Servers);
 	void SelectIndex(uint32 Index);
 	
 protected:
