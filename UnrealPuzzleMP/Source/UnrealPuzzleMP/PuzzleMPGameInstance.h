@@ -23,6 +23,7 @@ public:
 	virtual void Init() override;
 	virtual void LoadMainMenu() override;
 	virtual void RefreshServerList() override;
+	void StartSession();
 
 	UFUNCTION(BlueprintCallable)
 	void LoadMenu();

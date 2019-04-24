@@ -16,6 +16,7 @@
 const static FName SESSION_NAME = TEXT("GameSession");
 const static FName SERVER_NAME_KEY = TEXT("ServerName");
 const static int32 MAX_SESSIONS = 100;
+const static int32 MAX_PUBLIC_CONNECTIONS = 5;
 
 UPuzzleMPGameInstance::UPuzzleMPGameInstance(const FObjectInitializer &ObjectInitializer)
 {
@@ -69,6 +70,14 @@ void UPuzzleMPGameInstance::RefreshServerList()
 
 		UE_LOG(LogTemp, Warning, TEXT("Begin session find"));
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+	}
+}
+
+void UPuzzleMPGameInstance::StartSession()
+{
+	if (SessionSearch.IsValid())
+	{
+		SessionInterface->StartSession(SESSION_NAME);
 	}
 }
 
@@ -201,7 +210,7 @@ void UPuzzleMPGameInstance::CreateSession()
 		else
 			SessionSettings.bIsLANMatch = false;
 
-		SessionSettings.NumPublicConnections = 5;
+		SessionSettings.NumPublicConnections = MAX_PUBLIC_CONNECTIONS;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 		SessionSettings.Set(SERVER_NAME_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
